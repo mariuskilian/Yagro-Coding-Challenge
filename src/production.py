@@ -29,6 +29,12 @@ class Blueprint:
         self._components = components
         self._assembly_time = assembly_time
 
+    def get_missing_items(self, worker_items) -> Dict[Item]:
+        missing_items = self._components.copy()
+        for item, amount in worker_items:
+            missing_items[item] -= amount
+        return missing_items
+
     def is_missing_item(self, worker_items, item) -> bool:
         return item in self._components and worker_items[item] < self._components[item]
 

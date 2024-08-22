@@ -3,13 +3,14 @@ from production import Item, Product, Component, Blueprint
 
 
 class Worker:
-    # TODO make private
     _capacity: int
     _inventory: Inventory[Item, int]
     _assembly_eta: int
     _blueprint: Blueprint
 
     def __init__(self, capacity: int, blueprint: Blueprint):
+        if sum(blueprint.get_missing_items().values()) > capacity:
+            ValueError("Worker has less capacity than required for blueprint")
         self._capacity = capacity
         self._inventory = Inventory(int)
         self._assembly_eta = -1
@@ -28,11 +29,12 @@ class Worker:
         elif self.producing == 0:
             self.complete_assembly()
         # Worker can place product on conveyor belt
-        placable_item = self.get_placable_item()
-        if item == Item.NOTHING and placable_item != Item.NOTHING:
-            return placable_item
+        if item == Item.NOTHING:
+            placable_item = self.get_placable_item()
+            if placable_item != Item.NOTHING:
+                return placable_item
         # Worker handles current item on belt
-        elif self._blueprint.is_missing_item(item):
+        if self._blueprint.is_missing_item(item):
             return Item.NOTHING if self.try_pick_up_item(item) else item
         # If none of the above applied, the worker leaves the slot alone
         return item
@@ -69,6 +71,9 @@ class Worker:
             self._inventory[product] += 1
             capacity -= 1
         self.producing = -1
+
+    def get_num_missing_items(self):
+        return sum(self._blueprint.get_missing_items().values())
 
     # Worker requests an item if it's the only one missing from allowing assembly
     def request_item(self):
