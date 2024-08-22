@@ -1,17 +1,30 @@
+from typing import Dict, List
 from enum import Enum, auto
 
 
 # This enumerable class gives values for each type of item that might be on the
 # conveyor belt or in a workers hand.
-class Items(Enum):
+class Item(Enum):
     NOTHING = 0
-    COMP_A = auto()
-    COMP_B = auto()
-    PRODUCT = auto()
+
+
+class Component(Item):
+    A = auto()
+    B = auto()
+
+
+class Product(Item):
+    P1 = auto()
 
 
 class Blueprint:
-    def __init__(self, products, components, assembly_time):
+    _products: List[Product]
+    _components: Dict[Item, int]
+    _assembly_time: int
+
+    def __init__(
+        self, products: List[Product], components: Dict[Item, int], assembly_time: int
+    ):
         self._products = products
         self._components = components
         self._assembly_time = assembly_time
@@ -22,16 +35,17 @@ class Blueprint:
     def is_ready_to_assemble(self, worker_items) -> bool:
         return all(worker_items[item] >= self._components for item in self._components)
 
-    def complete_assembly(self, worker_items) -> Items:
-        if not self.is_ready_to_assemble(worker_items):
-            ValueError("The worker does not have the required components")
-        for component, amount in self._components.items():
-            worker_items[component] -= amount
-        for product in self._products:
-            worker_items[product] += 1
+    def get_components(self) -> Dict[Item, int]:
+        return self._components
+
+    def get_products(self) -> List[Product]:
+        return self._products
+
+    def get_assembly_time(self) -> int:
+        return self._assembly_time
 
 
 class Production:
     @staticmethod
     def create_default_blueprint() -> Blueprint:
-        return Blueprint([Items.PRODUCT], {Items.COMP_A: 1, Items.COMP_B: 1}, 4)
+        return Blueprint([Item.PRODUCT], {Item.COMP_A: 1, Item.COMP_B: 1}, 4)
