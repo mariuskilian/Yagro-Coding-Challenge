@@ -1,15 +1,15 @@
 import unittest
 from items import Component, Product
-from factory import Factories
+from blueprint import BlueprintTemplates
 from worker import Worker
 
 
 class TestWorker(unittest.TestCase):
     def setUp(self):
-        # Initialize a default factory
-        self.factory = Factories.create_default_factory()
+        # Initialize a default blueprint
+        self.blueprint = BlueprintTemplates.create_default_blueprint()
         # Initialize a worker with capacity 2
-        self.worker = Worker(2, self.factory)
+        self.worker = Worker(2, self.blueprint)
 
     def test_initial_capacity(self):
         # Test that worker's initial capacity is correctly set
@@ -58,7 +58,7 @@ class TestWorker(unittest.TestCase):
         self.worker._inventory[Component.A] = 1
         self.worker._inventory[Component.B] = 1
         self.worker._capacity = 0
-        self.worker.check_factory_for_assembly()
+        self.worker.check_for_assembly()
         self.worker.complete_assembly()
         self.assertEqual(self.worker._inventory[Component.A], 0)
         self.assertEqual(self.worker._inventory[Component.B], 0)
@@ -71,7 +71,7 @@ class TestWorker(unittest.TestCase):
         missing_items = self.worker.get_num_missing_items()
         self.assertEqual(
             missing_items, 1
-        )  # Assuming 1 missing item in the default factory
+        )  # Assuming 1 missing item in the default blueprint
 
     def test_get_requests(self):
         # Test getting item requests when only one item is missing

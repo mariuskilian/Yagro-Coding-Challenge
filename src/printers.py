@@ -1,14 +1,19 @@
 from typing import TYPE_CHECKING, List
 
 from items import Component, Item, Product
+from metrics import MetricsManager
 
 if TYPE_CHECKING:
-    from conveyor_belt import BeltSlot
+    from factory import BeltSlot
     from utils import BeltList
 
 
 def print_default_factory(
-    belt: "List[BeltSlot]", belt_items: "BeltList[Item]", item_off: "Item", t: int
+    belt: "List[BeltSlot]",
+    belt_items: "BeltList[Item]",
+    item_off: "Item",
+    metrics: "MetricsManager",
+    t: int,
 ):
 
     item_keys = {
@@ -34,6 +39,7 @@ def print_default_factory(
 
     print()
     print("Time Step: " + str(t))
+    print()
 
     for i in range(len(belt)):
         w1 = belt[i]._workers[0]
@@ -75,9 +81,19 @@ def print_default_factory(
         print(line)
 
     print()
+    print("Metrics:")
+
+    items_generated = metrics.get_value("ItemsGenerated")
+    a, b = items_generated[Component.A], items_generated[Component.B]
+    print(f"  Components Generated\t: {a + b}\t(A: {a}, B: {b})")
+
+    items_off = metrics.get_value("ItemsOff")
+    a, b = items_off[Component.A], items_off[Component.B]
+    print(f"  Products Produced\t: {items_off[Product.P1]}")
+    print(f"  Components Missed\t: {a + b}\t(A: {a}, B: {b})")
+
     print()
-    print(line_break + line_break)
-    print(line_break + line_break)
-    print(line_break + line_break)
+    print()
+    print(line_break.replace("=", "~"))
 
     input()
