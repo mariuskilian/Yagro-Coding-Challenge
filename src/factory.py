@@ -60,7 +60,7 @@ class Factory:
         self._metrics = metrics
         self._visualize = visualize
         self._belt = [self.generate_belt_slot() for _ in range(belt_length)]
-        self._belt_items = BeltList(belt_length, None)
+        self._belt_items = BeltList(belt_length, lambda: None)
         self._lifetime = 0
 
     def generate_belt_slot(self) -> BeltSlot:

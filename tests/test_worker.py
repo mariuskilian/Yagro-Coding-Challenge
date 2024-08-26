@@ -1,14 +1,14 @@
 import unittest
 from items import Component, Product
 from blueprint import BlueprintTemplates
+from utils import Inventory
 from worker import Worker
 
 
 class TestWorker(unittest.TestCase):
     def setUp(self):
-        # Initialize a default blueprint
+        # Initialize a default blueprint, and a worker with capacity 2
         self.blueprint = BlueprintTemplates.create_default_blueprint()
-        # Initialize a worker with capacity 2
         self.worker = Worker(2, self.blueprint)
 
     def test_initial_capacity(self):
@@ -39,7 +39,8 @@ class TestWorker(unittest.TestCase):
     def test_work_with_item_missing(self):
         # Test the worker's behavior when the item is missing and the worker should pick it up
         self.worker._capacity = 1  # Set capacity to 1 to test picking up
-        result = self.worker.work(Component.A, {}, may_handle_item=True)
+        result = self.worker.work(Component.A, Inventory(), may_handle_item=True)
+        print(self.worker._inventory)
         self.assertEqual(result, None)
         self.assertEqual(self.worker._inventory[Component.A], 1)
         self.assertEqual(self.worker._capacity, 0)
@@ -69,17 +70,13 @@ class TestWorker(unittest.TestCase):
         # Test getting the number of missing items for assembly
         self.worker._inventory[Component.A] = 1
         missing_items = self.worker.get_num_missing_items()
-        self.assertEqual(
-            missing_items, 1
-        )  # Assuming 1 missing item in the default blueprint
+        self.assertEqual(missing_items, 1)
 
     def test_get_requests(self):
         # Test getting item requests when only one item is missing
         self.worker._inventory[Component.A] = 1
         requests = self.worker.get_requests()
-        self.assertEqual(
-            requests[Component.B], 1
-        )  # Assuming Component.B is needed for assembly
+        self.assertEqual(requests[Component.B], 1)
 
     def test_get_placable_success(self):
         # Test getting a placable item from inventory when it exists

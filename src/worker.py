@@ -6,7 +6,7 @@ from blueprint import Item, Product, Blueprint
 # of product back on belt, etc.
 class Worker:
     _capacity: int
-    _inventory: Inventory[Item, int]
+    _inventory: Inventory[Item]
     _assembly_eta: int
     _blueprint: Blueprint
 
@@ -88,7 +88,7 @@ class Worker:
         return sum(self._blueprint.get_missing_items(self._inventory).values())
 
     # Worker requests an item if it's the only one missing from allowing assembly
-    def get_requests(self) -> Inventory[Item, int]:
+    def get_requests(self) -> Inventory[Item]:
         missing_items = self._blueprint.get_missing_items(self._inventory)
         if sum(missing_items.values()) != 1:
             return Inventory()
