@@ -13,7 +13,7 @@ def run_simulation():
 
     # Create factory
     blueprint = BlueprintTemplates.create_default_blueprint()
-    factory = Factory(3, blueprint, metrics_manager, True)
+    factory = Factory(3, blueprint, metrics_manager, False)
     for _ in range(100):
         factory.move_belt_forward()
 
