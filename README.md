@@ -11,6 +11,7 @@ Run the `src/__init__.py` file to execute the code with standard parameters (100
 # Assumptions
 
 * Running Python 3.9 or later
+* `${workspaceFolder}/src` is in the python path
 * Workers in one conveyor belt all assemble the same product, and have the same capacity
 * Workers are told to prefer to leave a component that they don't need as urgently as someone later down the line, meaning items get produced faster
 * Workers are greedy, meaning that if they need an item as urgently as another worker down the line, they will take the item
